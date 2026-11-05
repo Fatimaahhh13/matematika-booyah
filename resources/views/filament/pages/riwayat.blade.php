@@ -1,0 +1,168 @@
+<x-filament-panels::page>
+    <style>
+        /* MENGATUR HALAMAN AGAR MELEBAR PENUH KE SAMPING */
+        .fi-page { 
+            max-width: 100% !important; 
+        }
+        .fi-main { 
+            max-width: 100% !important; 
+        }
+        .fi-header {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 1rem !important;
+        }
+        .fi-header-heading { 
+            margin-bottom: 0 !important;
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+        }
+
+        .fi-ta {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+        
+        /* HEADER TABEL KUNING SOLID */
+        .fi-ta thead,
+        .fi-ta thead tr,
+        .fi-ta-header-cell,
+        .fi-ta-header-cell > div,
+        .fi-ta-header-cell button,
+        .fi-ta-header-cell span {
+            background-color: #ffc72c !important;
+            background-image: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+        .fi-ta-header-cell::before,
+        .fi-ta-header-cell::after,
+        .fi-ta thead tr::before,
+        .fi-ta thead tr::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        .fi-ta thead tr {
+            border-bottom: 1.5px solid #eab308 !important;
+        }
+
+        .fi-ta th,
+        .fi-ta th span,
+        .fi-ta th button,
+        .fi-ta th svg,
+        .fi-ta-header-cell span,
+        .fi-ta-header-cell button,
+        .fi-ta-header-cell svg,
+        .fi-ta-header-cell label {
+            color: #000000 !important;
+            fill: #000000 !important;
+            font-size: 0.85rem !important;
+            font-weight: 900 !important;
+            opacity: 1 !important;
+        }
+
+        .fi-ta td {
+            font-size: 0.85rem !important;
+            font-weight: 400 !important;
+        }
+        .fi-ta-pagination {
+            font-size: 0.8rem !important;
+            font-weight: 400 !important;
+        }
+
+        .fi-ta-content {
+            background-color: #ffffff !important;
+            border-radius: 1rem !important;
+            overflow: hidden !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02) !important;
+        }
+    </style>
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%;">
+        
+        {{-- KOTAK PENCARIAN, FILTER & TOMBOL (SEJAJAR DENGAN JUDUL DI KANAN ATAS) --}}
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.75rem; width: 100%; margin-top: -3.5rem; margin-bottom: 0.5rem; position: relative; z-index: 10;">
+            
+            {{-- KOTAK PENCARIAN KUSTOM --}}
+            <div style="position: relative; width: 260px;">
+                <input 
+                    type="text" 
+                    wire:model.live.debounce.300ms="search" 
+                    placeholder="Cari riwayat..." 
+                    style="width: 100%; padding: 0.5rem 0.875rem 0.5rem 2.3rem; font-size: 0.875rem; font-weight: 600; border: 1.5px solid #fde68a; border-radius: 0.75rem; background-color: #ffffff; color: #374151; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.01); transition: all 0.2s ease;"
+                />
+                <div style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center; color: #9ca3af;">
+                    <svg style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+            </div>
+
+            {{-- TOMBOL & DROPDOWN FILTER KUSTOM --}}
+            <div style="position: relative;" x-data="{ openFilter: false }">
+                <button 
+                    type="button"
+                    @click="openFilter = !openFilter"
+                    style="display: inline-flex; align-items: center; justify-content: center; height: 38px; width: 38px; background-color: #ffffff; border: 1.5px solid #fde68a; border-radius: 0.75rem; color: #d97706; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.01); transition: all 0.2s ease;"
+                    title="Filter Berdasarkan Bulan"
+                >
+                    <svg style="width: 18px; height: 18px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                    </svg>
+                </button>
+
+                {{-- Dropdown Menu Filter Bulan Dinamis --}}
+                <div 
+                    x-show="openFilter" 
+                    @click.outside="openFilter = false"
+                    style="display: none; position: absolute; right: 0; margin-top: 0.5rem; width: 220px; background-color: #ffffff; border: 1.5px solid #fde68a; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 0.875rem; z-index: 50;"
+                >
+                    <div style="font-size: 0.7rem; font-weight: 800; color: #4b5563; margin-bottom: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                        Filter Bulan
+                    </div>
+
+                    <select 
+                        wire:model.live="selectedMonth"
+                        style="width: 100%; padding: 0.5rem; font-size: 0.875rem; font-weight: 500; border: 1.5px solid #fde68a; border-radius: 0.5rem; background-color: #fffbeb; color: #374151; outline: none; cursor: pointer;"
+                    >
+                        <option value="">Semua Bulan</option>
+                        @foreach($this->getAvailableMonthsProperty() as $monthNum => $monthName)
+                            <option value="{{ $monthNum }}">{{ $monthName }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- TEKS INFORMASI BAHASA INDONESIA --}}
+        <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; gap: 0.5rem; padding-left: 0.25rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <div style="color: #d97706; display: flex; align-items: center;">
+                    <svg style="width: 1.1rem; height: 1.1rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <span style="font-size: 0.85rem; font-weight: 400; color: #4b5563;">
+                    Daftar riwayat sesi pengajaran instruktur aktif
+                </span>
+            </div>
+        </div>
+
+        {{-- KONTAINER UTAMA TABEL --}}
+        <div style="background-color: #ffffff; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); width: 100%; box-sizing: border-box;">
+            {{ $this->table }}
+        </div>
+
+    </div>
+</x-filament-panels::page>
