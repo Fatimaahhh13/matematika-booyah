@@ -84,7 +84,7 @@
                     @forelse ($modules as $module)
                         <div style="border: 1.5px solid #fde68a; border-radius: 1rem; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; background: #ffffff; position: relative; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.04); transition: all 0.2s ease;" class="hover:shadow-md hover:border-amber-400">
                             
-                            {{-- Sisi Kiri: Gambar Sampul (Diubah memanjang ke atas / bentuk potret buku) --}}
+                            {{-- Sisi Kiri: Gambar Sampul --}}
                             <div style="display: flex; align-items: center; gap: 1.25rem; flex: 1; min-width: 0;">
                                 @if(!empty($module->cover))
                                     <a href="{{ asset('storage/' . $module->cover) }}" target="_blank" title="Lihat gambar sampul" style="text-decoration: none; flex-shrink: 0;">
@@ -93,7 +93,6 @@
                                         </div>
                                     </a>
                                 @else
-                                    {{-- Default Kosong jika tidak ada cover (Bentuk vertikal potret) --}}
                                     <div style="width: 4.25rem; height: 5.75rem; background-color: #facc15; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: #111827; flex-shrink: 0; border: 2px solid #eab308; box-shadow: 0 4px 10px rgba(250, 204, 21, 0.2);">
                                         <svg style="width: 1.5rem; height: 1.5rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -106,17 +105,21 @@
                                     <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
                                         <span style="font-size: 1rem; font-weight: 800; color: #111827;">{{ $module->title }}</span>
                                         
-                                        {{-- Label Level Konsisten Warna #facc15 --}}
-                                        <span style="font-size: 0.7rem; font-weight: 800; background-color: #fde68a; color: #111827; padding: 0.2rem 0.6rem; border-radius: 0.5rem; border: 1px solid #eab308; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">{{ $module->grade }}</span>
+                                        <span style="font-size: 0.7rem; font-weight: 800; background-color: #facc15; color: #111827; padding: 0.2rem 0.6rem; border-radius: 0.5rem; border: 1px solid #eab308; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">{{ $module->grade }}</span>
                                         
-                                        {{-- Tombol Buka Materi PDF Konsisten Warna #facc15 --}}
+                                        {{-- Tombol Buka Materi PDF (Memanggil method openPdfModal di PHP) --}}
                                         @if(!empty($module->file_path))
-                                            <a href="{{ asset('storage/' . $module->file_path) }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.3rem; background-color: #fde68a; color: #111827; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 800; text-decoration: none; border: 1px solid #eab308; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s ease;" class="hover:bg-amber-400">
+                                            <button 
+                                                type="button"
+                                                wire:click="openPdfModal({{ $module->id }})"
+                                                style="display: inline-flex; align-items: center; gap: 0.3rem; background-color: #facc15; color: #111827; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 800; text-decoration: none; border: 1px solid #eab308; box-shadow: 0 1px 2px rgba(0,0,0,0.02); cursor: pointer; transition: all 0.2s ease;" 
+                                                class="hover:bg-amber-400"
+                                            >
                                                 <svg style="width: 14px; height: 14px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                                 </svg>
                                                 Buka Materi PDF
-                                            </a>
+                                            </button>
                                         @endif
                                     </div>
 
@@ -142,15 +145,20 @@
                             </div>
 
                             {{-- Sisi Kanan: Tombol Aksi Edit & Hapus --}}
-                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
-                                <button type="button" wire:click="editModule({{ $module->id }})" title="Edit Modul" style="background-color: #fde68a; border: 1px solid #eab308; cursor: pointer; color: #111827; padding: 0.5rem 0.75rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s;" class="hover:bg-amber-400">
-                                    <svg style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                            <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+                                {{-- Tombol Edit --}}
+                                <button type="button" wire:click="editModule({{ $module->id }})" title="Edit Modul" style="background: transparent; border: none; cursor: pointer; padding: 0.2rem; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" class="hover:opacity-75">
+                                    <svg style="width: 24px; height: 24px; color: #b45309;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                        <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                     </svg>
                                 </button>
-                                <button type="button" wire:click="deleteModule({{ $module->id }})" wire:confirm="Apakah Anda yakin ingin menghapus modul ini?" title="Hapus Modul" style="background-color: #fee2e2; border: 1px solid #dc2626; cursor: pointer; color: #dc2626; padding: 0.5rem 0.75rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s;" class="hover:bg-red-600 hover:text-white">
-                                    <svg style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                
+                                {{-- Tombol Hapus --}}
+                                <button type="button" wire:click="deleteModule({{ $module->id }})" wire:confirm="Apakah Anda yakin ingin menghapus modul ini?" title="Hapus Modul" style="background: transparent; border: none; cursor: pointer; padding: 0.2rem; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" class="hover:opacity-75">
+                                    <svg style="width: 24px; height: 24px; color: #dc2626;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.56 1.21-2.83 2.763-2.952a41.286 41.286 0 0 1 4.974 0c1.553.122 2.763 1.392 2.763 2.952Zm-10.612 2.21 1.005 13.07a1.5 1.5 0 0 0 1.496 1.385h7.828a1.5 1.5 0 0 0 1.496-1.385l1.005-13.07a48.667 48.667 0 0 0-13.33 0ZM10 9.75a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5a.75.75 0 0 1 .75-.75Zm4 0a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                                        <path d="M10.5 2.5a39.9 39.9 0 0 1 3 0 .75.75 0 0 1 0 1.5 38.4 38.4 0 0 0-3 0 .75.75 0 0 1 0-1.5Z" />
                                     </svg>
                                 </button>
                             </div>
@@ -169,4 +177,29 @@
             </div>
         </div>
     </div>
+
+    {{-- MODAL POPUP INTERNAL UNTUK MENAMPILKAN PDF --}}
+    @if($isPdfModalOpen)
+        <div style="position: fixed; inset: 0; z-index: 99999; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
+            <div style="background: #ffffff; width: 100%; max-width: 75rem; height: 85vh; border-radius: 1rem; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);">
+                
+                {{-- Header Modal --}}
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: #f59e0b; border-bottom: 1px solid #e5e7eb;">
+                    <h3 style="font-size: 1rem; font-weight: 800; color: #111827; margin: 0;">Pratinjau Modul PDF</h3>
+                    <button type="button" wire:click="closePdfModal" style="background: transparent; border: none; font-size: 1.25rem; font-weight: bold; cursor: pointer;">✕</button>
+                </div>
+
+                {{-- Konten PDF Viewer --}}
+                <div style="flex: 1; width: 100%; background: #f3f4f6;">
+                    <iframe src="{{ $selectedPdfUrl }}" width="100%" height="100%" style="border: none;"></iframe>
+                </div>
+
+                {{-- Footer Modal --}}
+                <div style="padding: 0.75rem 1.5rem; display: flex; justify-content: flex-end; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                    <button type="button" wire:click="closePdfModal" style="padding: 0.5rem 1rem; background-color: #e5e7eb; color: #374151; font-weight: 700; border-radius: 0.5rem; border: none; cursor: pointer;">Tutup</button>
+                </div>
+
+            </div>
+        </div>
+    @endif
 </x-filament-panels::page>

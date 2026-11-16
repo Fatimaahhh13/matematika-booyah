@@ -76,7 +76,7 @@ class GantiPassword extends Page
             ->statePath('data');
     }
 
-    public function submit(): void
+    public function submit()
     {
         $data = $this->form->getState();
 
@@ -91,6 +91,14 @@ class GantiPassword extends Page
             ->success()
             ->send();
 
-        $this->form->fill();
+        // Hapus session intended agar tidak looping kembali ke halaman ganti password
+        session()->forget('url.intended');
+
+        // Arahkan langsung berdasarkan role setelah ganti password
+        if ($user->name === 'Super Admin' || !empty($user->cabang)) {
+            return redirect()->to(filament()->getUrl()); // Super Admin / Admin Cabang ke Dashboard
+        }
+
+        return redirect()->to('/admin/input-sesi'); // Tutor ke halaman Input Sesi
     }
 }

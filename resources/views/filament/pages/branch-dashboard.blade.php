@@ -6,16 +6,28 @@
         .fi-main {
             max-width: 100% !important;
         }
-    </style>
-
-    <div style="display: flex; flex-direction: column; gap: 2rem; width: 100%;">
+    </style> 
+    <div style="display: flex; flex-direction: column; gap: 1.25rem; width: 100%;">
         
-        {{-- WELCOME BANNER KHUSUS ADMIN CABANG (Latar Belakang Kuning) --}}
-        <div style="background-color: #ffc72c; border: 1.5px solid #f59e0b; border-radius: 1rem; padding: 2.25rem 2.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; width: 100%; box-sizing: border-box;">
-            
+        {{-- BANNER SAMBUTAN SUPER ADMIN DENGAN BACKGROUND GAMBAR --}}
+        <div style="
+            background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url('{{ asset('images/banner-bg.jpg') }}') center/cover no-repeat;
+            border: 1.5px solid #f59e0b; 
+            border-radius: 0.875rem; 
+            padding: 3.5rem 1.75rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+            position: relative; 
+            overflow: hidden; 
+            width: 100%; 
+            box-sizing: border-box;
+            color: #ffffff;
+        ">
             <div style="display: flex; flex-direction: column; gap: 0.5rem; z-index: 2;">
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 700; color: #1f2937;">
-                    <span>Welcome back, 👋</span>
+                    <span>Welcome back,</span>
                 </div>
                 <h1 style="font-size: 2.25rem; font-weight: 900; color: #000000; margin: 0; line-height: 1.2;">
                     {{ auth()->user()->name ?? 'Admin Cabang' }}!

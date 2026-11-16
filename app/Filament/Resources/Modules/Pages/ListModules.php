@@ -18,6 +18,26 @@ class ListModules extends ListRecords
     public ?string $activeTab = 'Level A';
     public ?string $search = '';
 
+    // State untuk mengontrol modal PDF internal
+    public bool $isPdfModalOpen = false;
+    public ?string $selectedPdfUrl = null;
+
+    public function openPdfModal(int $id): void
+    {
+        $module = Module::find($id);
+
+        if ($module && $module->file_path) {
+            $this->selectedPdfUrl = asset('storage/' . $module->file_path);
+            $this->isPdfModalOpen = true;
+        }
+    }
+
+    public function closePdfModal(): void
+    {
+        $this->isPdfModalOpen = false;
+        $this->selectedPdfUrl = null;
+    }
+
     // Mengubah teks breadcrumb "List" menjadi "Daftar"
     public function getBreadcrumb(): string
     {
@@ -39,7 +59,7 @@ class ListModules extends ListRecords
     {
         $query = Module::query();
 
-        // Menyaring berdasarkan tab level aktif (langsung mencocokkan teks 'Level A', 'Level B', 'Level C')
+        // Menyaring berdasarkan tab level aktif
         if ($this->activeTab) {
             $query->where('grade', $this->activeTab);
         }

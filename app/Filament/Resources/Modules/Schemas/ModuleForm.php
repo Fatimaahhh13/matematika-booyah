@@ -24,7 +24,7 @@ class ModuleForm
                         TextInput::make('title')
                             ->label('Judul Modul')
                             ->prefixIcon('heroicon-o-pencil-square')
-                            ->placeholder('Contoh: Aljabar Dasar & Persamaan')
+                            ->placeholder('Contoh: A1')
                             ->required()
                             ->maxLength(255)
                             ->columnSpan(1)
